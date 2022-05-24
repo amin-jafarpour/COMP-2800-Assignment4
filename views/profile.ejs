@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        async function likes() {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `http://localhost:5000/log/like/${$('#pokid').text()}`,
+                    success: function(data) {
+                        $('#numLikes').text(data[0].likes);
+
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+
+        async function dislikes() {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `http://localhost:5000/log/dislike/${$('#pokid').text()}`,
+                    success: function(data) {
+                        $('#numDislikes').text(data[0].dislikes);
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        window.onload = async function() {
+
+            await $.ajax({
+                type: "GET", //http://localhost:5000/log/poklogs/10
+                url: `http://localhost:5000/log/poklogs/${$('#pokid').text()}`,
+                success: function(data) {
+                    $('#numLikes').text(data[0].likes);
+                    $('#numDislikes').text(data[0].dislikes);
+                    console.log(data);
+                }
+            })
+
+        }
+    </script>
+</head>
+
+<body>
+
+
+    <div class="img-div">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/<%= id %>.png" alt="">
+    </div>
+
+
+
+
+
+
+    <div class="poke-info">
+
+
+        <h1>ID:
+            <%= id %>
+        </h1>
+        <p>Name:
+            <%= name %>
+        </p>
+        <p>weight :
+            <%= weight %>
+        </p>
+        <p>Height :
+            <%= height %>
+        </p>
+        <p>species :
+            <%= species %>
+        </p>
+    </div>
+
+
+
+    <div class="gird-container">
+        <div>
+            <label>Likes</label>
+            <label id="numLikes"></label>
+        </div>
+        <div>
+            <input type="button" onclick="likes()" value="like">
+        </div>
+    </div>
+
+    <div class="gird-container">
+        <div>
+            <label>Dislikes</label>
+            <label id="numDislikes"></label>
+        </div>
+
+        <div>
+            <input type="button" onclick="dislikes()" value="dislike">
+        </div>
+    </div>
+
+
+
+
+    <!-- IMPORTANT -->
+    <p id="pokid" style="visibility: hidden;">
+        <%= id %>
+    </p>
+
+</body>
+
+</html>

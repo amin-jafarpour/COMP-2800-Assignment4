@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        function appendPok(properties) {
+
+            const div = document.createElement("div");
+            const a = document.createElement("a");
+            const img = document.createElement("img");
+            const h1 = document.createElement("h1");
+
+            div.className = "grid-item";
+            img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${properties.id}.png`
+            h1.textContent = properties.name;
+            a.href = `profile/${properties.id}`;
+
+            a.appendChild(img);
+            div.appendChild(a);
+            div.appendChild(h1);
+            $("main").append(div);
+        }
+
+
+
+        async function getResult() {
+            document.getElementsByTagName('main')[0].innerHTML = "";
+            const regex = /^[a-zA-Z ]+$/;
+
+            const type = document.getElementById('drop-down-selection').value;
+            const name = document.getElementById('text-field-name-selection').value;
+            const species = document.getElementById('text-field-species-selection').value;
+
+            const nameError = document.getElementById("text-field-name-selection-error");
+            const speciesError = document.getElementById("text-field-species-selection-error");
+
+            let selectedPok = [];
+
+
+            if (!regex.test(species) && species !== "") {
+                speciesError.innerHTML = "Invalid species";
+                console.log(species);
+
+            } else {
+                speciesError.innerHTML = "";
+            }
+
+            if (!regex.test(name) && name !== "") {
+                nameError.innerHTML = "Invalid name";
+            } else {
+                nameError.innerHTML = "";
+            }
+            console.log("name:", name, "species:", species, "Type:", type);
+            for (let i = 1; i <= 30; ++i) {
+
+                await $.ajax({
+                    url: `http://localhost:5000/pok/${i}/`,
+                    success: function(jsonObj) {
+
+
+
+
+
+                        if ((name === "" || jsonObj.name === name) && (species === "" || jsonObj.species === species)) {
+
+                            for (let j = 0; j < jsonObj.type.length && type != ""; ++j) {
+                                if (jsonObj.type[j] === type) {
+                                    appendPok(jsonObj);
+                                }
+                            }
+                            console.log(jsonObj);
+
+                            if (type === "") {
+                                appendPok(jsonObj);
+
+                            }
+                        }
+
+                    }
+                });
+
+            };
+        }
+    </script>
+</head>
+
+<body>
+
+    <header>
+        <h1>
+            Search Page
+        </h1>
+    </header>
+    <br/>
+
+    <div class="search-container">
+
+        <div>
+            <h2>Select Type:</h2>
+            <select name="poke_type" id="drop-down-selection">
+                <option value=""></option>
+                <option value="grass">grass</option>
+                <option value="water">water</option>
+                <option value="electric">electric</option>
+                <option value="fire">fire</option>
+            </select>
+        </div>
+
+        <div>
+            <h2>Enter Name:</h2>
+            <input type="text" id="text-field-name-selection" value="">
+            <p id="text-field-name-selection-error"></p>
+        </div>
+
+        <div>
+            <h2>Enter Species:</h2>
+            <input type="text" id="text-field-species-selection" value="">
+            <p id="text-field-species-selection-error"></p>
+        </div>
+
+        <div>
+            <h2>Submit</h2>
+            <input type="submit" id="submit-button" onclick="getResult()" value="Click">
+        </div>
+    </div>
+
+    <main id="main-section">
+
+    </main>
+
+
+
+</body>
+
+</html>

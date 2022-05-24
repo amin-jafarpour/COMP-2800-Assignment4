@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Index
+    </title>
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // async function loadPok() {
+        //     try {
+        //         await $.ajax({
+        //             type: "GET",
+        //             url: `http://localhost:5000/reload`,
+        //             success: (data) => console.log('poks reloaded to DB: ', data)
+        //         })
+        //     } catch (e) {
+        //         console.log(e);
+        //     }    
+        // }
+
+        function appendPok(properties) {
+
+            const div = document.createElement("div");
+            const a = document.createElement("a");
+            const img = document.createElement("img");
+            const h1 = document.createElement("h1");
+
+
+
+            div.className = "grid-item";
+            img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${properties.id}.png`
+            h1.textContent = properties.name;
+            a.href = `profile/${properties.id}`;
+
+            console.log(properties.name, `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${properties.id}.png`);
+
+            a.appendChild(img);
+            div.appendChild(a);
+            div.appendChild(h1);
+            $("main").append(div);
+        }
+
+        function getPok() {
+
+            const max = 30;
+            const min = 1;
+            //const randomPokID = Math.floor(Math.random() * 10);
+            const randomPokID = Math.floor(Math.random() * (max - min + 1)) + min;
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: `http://localhost:5000/pok/${randomPokID}`,
+                    success: function(jsonObj) {
+                        appendPok(jsonObj);
+                    }
+                })
+            } catch (e) {
+                console.log(e);
+            }
+
+
+        }
+
+
+        window.onload = async function() {
+            for (let i = 0; i < 9; ++i) {
+                getPok();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>
+            Welcome to pokemon land
+        </h1>
+    </header>
+    <nav id="navbar">
+        <ul>
+            <a href="">
+                User Account
+            </a>
+
+            <a href="./loginpage.html">
+                Log in
+            </a>
+
+            <a href="./signuppage.html">
+                Sign up
+            </a>
+
+            <a href="search.html" style="float: right; margin-right: 10px;" id="search-link">
+                Search Page
+            </a>
+
+        </ul>
+    </nav>
+    <main>
+
+        <!-- <div class="grid-item">
+            <a href="">
+                <img src="https://picsum.photos/536/356/" alt="">
+                <h2></h2>
+            </a>
+        </div> -->
+
+
+
+
+
+
+
+
+    </main>
+    <footer>
+
+        <h5>
+            Copyright © Your Website 2022
+        </h5>
+        <div class="social-media-footer">
+            <img src="https://blog.hootsuite.com/wp-content/uploads/2018/09/Twitter_Logo_Blue-150x150.png" alt="" width="50px" height="50px">
+            <img src="https://blog.hootsuite.com/wp-content/uploads/2018/09/glyph-logo_May2016-150x150.png" alt="" width="50px" height="50px">
+            <img src="https://blog.hootsuite.com/wp-content/uploads/2018/09/snap-ghost-yellow-310x309.png" alt="12" width="50px" height="50px">
+        </div>
+    </footer>
+
+
+</body>
+
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        #navbar {
+            background-color: #333;
+            overflow: hidden;
+            width: 100%;
+            height: 100px;
+        }
+        
+        #navbar a {
+            display: block;
+            float: left;
+            padding: 10px;
+            font-size: 30px;
+            color: #f2f2f2;
+            text-decoration: none;
+            padding: 14px 16px;
+            text-align: center;
+        }
+        
+        #navbar a:hover {
+            background-color: #f2f2f2;
+            color: rgb(19, 16, 16);
+        }
+        
+        #purchaselog {
+            width: 100%;
+        }
+        
+        .item-container {
+            width: 25%;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        var totalCost = 0;
+
+        function addItem(jsonObj) {
+            const add = document.createElement('button');
+            const remove = document.createElement('button');
+            const div = document.createElement('div');
+            const qty = document.createElement('span');
+            const p = document.createElement('span');
+            const cost = document.createElement('span');
+            add.onclick = function() {
+                addcard(jsonObj.id)
+            };
+            add.innerHTML = "+";
+            remove.onclick = function() {
+                removecard(jsonObj.id)
+            };
+            remove.innerHTML = "-";
+            p.textContent = `ID:${jsonObj.id}`;
+            qty.id = `qty${jsonObj.id}`;
+            qty.innerHTML = `QTY:${jsonObj.qty}`;
+            cost.id = `cost${jsonObj.id}`;
+            cost.innerHTML = `${jsonObj.qty} * ${"$30"} =${jsonObj.qty * 30}`;
+            div.appendChild(add);
+            div.appendChild(remove);
+            div.appendChild(qty);
+            div.appendChild(p);
+            div.appendChild(cost);
+            div.className = "item-container";
+            document.getElementById('purchaselog').appendChild(div);
+            totalCost += jsonObj.qty * 30;
+            document.getElementById('total-cost').innerHTML = totalCost;
+        }
+
+        function getPurchaseLog() {
+
+            $.ajax({
+                type: "GET",
+                url: `/summarypurchase`,
+                success: function(jsonObj) {
+                    for (let i = 0; i < jsonObj.cards.length; ++i) {
+                        console.log(jsonObj.cards[i], "yeeesd");
+                        addItem(jsonObj.cards[i]);
+                    }
+
+                }
+            })
+
+
+        }
+
+        async function addcard(id) {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `/addcard/${id}}`,
+                    success: function(data) {
+                        console.log("heeeey", data.qty);
+                        $(`#qty${id}`).text("QTY: " + data.qty);
+                        $(`#cost${id}`).text(`${data.qty} * ${"$30"} =${data.qty * 30}`);
+                        totalCost += 30;
+                        document.getElementById('total-cost').innerHTML = totalCost;
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function removecard(id) {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `/removecard/${id}}`,
+                    success: function(data) {
+                        $(`#qty${id}`).text("QTY: " + data.qty);
+                        $(`#cost${id}`).text(`${data.qty} * ${"$30"} =${data.qty * 30}`);
+                        if (totalCost != 0) {
+                            totalCost -= 30;
+                        }
+                        document.getElementById('total-cost').innerHTML = totalCost;
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function processpurchase() {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `/processpurchase`,
+                    success: function(data) {
+                        $(`#payment-details`).text(JSON.stringify(data));
+                        $("#purchaselog").text("");
+                        document.getElementById('total-cost').innerHTML = 0;
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        window.onload = getPurchaseLog;
+    </script>
+</head>
+
+<body>
+
+    <nav id="navbar">
+        <ul>
+            <a href="/logout">
+                Log out
+            </a>
+            <a href="/search">
+                Search 
+            </a>
+
+            <a onclick="processpurchase()">Place order</a>
+
+            <a href="/purchasehistory">Purchase History</a>
+        </ul>
+    </nav>
+
+    <div id="payment-details"></div>
+
+    <div id="purchaselog"></div>
+
+    <div><span>Total cost: $</span><span id="total-cost">0.0</span></div>
+
+</body>
+
+</html>

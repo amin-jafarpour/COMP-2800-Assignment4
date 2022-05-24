@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function getPok() {
+            const max = 20;
+            const min = 1;
+            const randomPokID = Math.floor(Math.random() * (max - min + 1)) + min;
+            $.ajax({
+                type: "GET",
+                url: `./pokemon/${randomPokID}`,
+                success: function(jsonObj) {
+                    console.log(randomPokID, "pokemon data recevied", jsonObj);
+                    appendPok(jsonObj[0]);
+                }
+            })
+        }
+
+        function appendPok(properties) {
+
+            const div = document.createElement("div");
+            const a = document.createElement("a");
+            const img = document.createElement("img");
+            const h1 = document.createElement("h1");
+            div.className = "grid-item";
+            img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${properties.id}.png`
+            h1.textContent = properties.name;
+            //a.href = `./pokemonpurchase/${properties.id}`;
+            a.href = `/purchase/${properties.id}`;
+            a.appendChild(img);
+            div.appendChild(a);
+            div.appendChild(h1);
+            $("main").append(div);
+        }
+
+        // function addItem(jsonObj){
+        //     const add = document.createElement('button');
+        //     const remove = document.createElement('button');
+        //     const div = document.createElement('div');
+        //     const qty = document.createElement('p');
+        //     const p = document.createElement('p');
+        //     add.onclick = function (){addcard(jsonObj.id)};
+        //     add.innerHTML = "+";
+        //     remove.onclick = function (){removecard(jsonObj.id)};
+        //     remove.innerHTML = "-";
+        //     p.textContent = `ID:${jsonObj.id}`;
+        //     qty.id = `qty${jsonObj.id}`;
+        //     div.appendChild(add);
+        //     div.appendChild(remove);
+        //     div.appendChild(qty);
+        //     div.appendChild(p);
+        //     document.getElementById('purchaselog').appendChild(div);
+        // }
+
+        // function getPurchaseLog() {
+
+        //     $.ajax({
+        //         type: "GET",
+        //         url: `/summarypurchase`,
+        //         success: function (jsonObj) {
+        //             for(let i = 0; i < jsonObj.cards.length; ++i){
+        //                 console.log(jsonObj.cards[i], "yeeesd");
+        //                 addItem(jsonObj.cards[i]);
+        //             }
+
+        //         }
+        //     })
+
+
+        // }
+
+        // async function addcard(id) {
+        //     try {
+        //         await $.ajax({
+        //             type: "GET",
+        //             url: `/addcard/${id}}`,
+        //             success: function (data) {
+        //                 console.log("heeeey", data.qty);
+        //                 $(`#qty${id}`).text(data.qty);
+        //             }
+        //         })
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
+
+        // async function removecard(id) {
+        //     try {
+        //         await $.ajax({
+        //             type: "GET",
+        //             url: `/removecard/${id}}`,
+        //             success: function (data) {
+        //                 $(`#qty${id}`).text(data.qty);
+        //             }
+        //         })
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
+
+
+
+
+
+        function setup() {
+
+            for (let i = 0; i < 9; ++i) {
+                getPok();
+            }
+
+            //getPurchaseLog();
+
+        }
+
+        window.onload = setup;
+    </script>
+</head>
+
+<body>
+
+    <nav id="navbar">
+        <ul>
+            <a href="/logout">
+                Log out
+            </a>
+            <a href="checkout">checkout</a>
+            <a href="/search">
+                Search 
+            </a>
+
+            <a href="/purchasehistory">Purchase History</a>
+        </ul>
+    </nav>
+
+    <div id="purchaselog">
+
+    </div>
+
+    <main></main>
+
+    <div id="shopping-card">
+
+    </div>
+
+
+</body>
+
+</html>

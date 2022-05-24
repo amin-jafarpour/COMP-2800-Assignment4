@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase</title>
+    <style>
+        #navbar {
+            background-color: #333;
+            overflow: hidden;
+            width: 100%;
+            height: 100px;
+        }
+        
+        #navbar a {
+            display: block;
+            float: left;
+            padding: 10px;
+            font-size: 30px;
+            color: #f2f2f2;
+            text-decoration: none;
+            padding: 14px 16px;
+            text-align: center;
+        }
+        
+        #navbar a:hover {
+            background-color: #f2f2f2;
+            color: rgb(19, 16, 16);
+        }
+    </style>
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        async function likes() {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `http://localhost:5000/log/like/${$('#pokid').text()}`,
+                    success: function(data) {
+                        $('#numLikes').text(data[0].likes);
+
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+
+        async function dislikes() {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `http://localhost:5000/log/dislike/${$('#pokid').text()}`,
+                    success: function(data) {
+                        $('#numDislikes').text(data[0].dislikes);
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function addcard() {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `/addcard/${$('#pokid').text()}`,
+                    success: function(data) {
+                        $('#qty').text(data.qty);
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function removecard() {
+            try {
+                await $.ajax({
+                    type: "GET",
+                    url: `/removecard/${$('#pokid').text()}`,
+                    success: function(data) {
+                        $('#qty').text(data.qty);
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        window.onload = async function() {
+
+            await $.ajax({
+                type: "GET", //http://localhost:5000/log/poklogs/10
+                url: `http://localhost:5000/log/poklogs/${$('#pokid').text()}`,
+                success: function(data) {
+                    $('#numLikes').text(data[0].likes);
+                    $('#numDislikes').text(data[0].dislikes);
+                    console.log(data);
+                }
+            })
+
+            document.getElementsByTagName("style")[0].innerHTML = document.getElementById('css').innerHTML;
+
+            getQty();
+
+        }
+
+        function getQty() {
+
+            $.ajax({
+                type: "GET",
+                url: `/summarypurchase`,
+                success: function(jsonObj) {
+                    const qty = document.getElementById('qty');
+                    qty.innerHTML = 0;
+                    for (let i = 0; i < jsonObj.cards.length; ++i) {
+                        if (jsonObj.cards[i].id == document.getElementById('pokid').innerHTML.trim()) {
+                            qty.innerHTML = jsonObj.cards[i].qty;
+                        }
+                    }
+
+                }
+            })
+
+
+        }
+    </script>
+
+
+</head>
+
+<body>
+
+    <nav id="navbar">
+        <ul>
+            <a href="/logout">
+                Log out
+            </a>
+
+            <a href="/search">
+                Search 
+            </a>
+
+            <a href="/checkout">checkout</a>
+
+            <a href="/purchasehistory">Purchase History</a>
+        </ul>
+    </nav>
+
+
+    <div class="img-div">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/<%= id %>.png" alt="">
+    </div>
+
+
+
+    <div class="poke-info">
+
+
+        <h1>ID:
+            <%= id %>
+        </h1>
+        <p>Name:
+            <%= name %>
+        </p>
+        <p>weight :
+            <%= weight %>
+        </p>
+        <p>Height :
+            <%= height %>
+        </p>
+        <p>species :
+            <%= species %>
+        </p>
+    </div>
+
+    <div class="gird-container">
+        <div>
+            <label>Likes</label>
+            <label id="numLikes"></label>
+        </div>
+        <div>
+            <input type="button" onclick="likes()" value="like">
+        </div>
+    </div>
+
+    <div class="gird-container">
+        <div>
+            <label>Dislikes</label>
+            <label id="numDislikes"></label>
+        </div>
+
+        <div>
+            <input type="button" onclick="dislikes()" value="dislike">
+        </div>
+    </div>
+
+
+
+    <div class="gird-container">
+        <div>
+            <input type="button" onclick="addcard()" value="+">
+            <input type="button" onclick="removecard()" value="-">
+        </div>
+        <div>
+
+            <span>QTY:</span><span id="qty"></span>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- IMPORTANT -->
+    <p id="pokid" style="visibility: hidden;">
+        <%= id %>
+    </p>
+    <div id="css" style="visibility: hidden;">
+        <%=css%>
+    </div>
+</body>
+
+</html>
