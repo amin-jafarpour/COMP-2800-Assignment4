@@ -20,6 +20,7 @@ const session = require('express-session');
 const { query } = require('express');
 const { parse } = require('path');
 const { clearScreenDown } = require('readline');
+const { get } = require('http');
 //***********************************************************************************************************************
 app.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }));
 
@@ -42,6 +43,7 @@ const pokSchema = new mongoose.Schema({
 });
 
 const UserSchema = new mongoose.Schema({
+    "admin": Boolean,
     "username": String,
     "firstname": String,
     "lastname": String,
@@ -56,12 +58,14 @@ const userModel = mongoose.model("user", UserSchema);
 //************************************************************************************************************* */
 
 
-function addUserDB(user) {
+
+function addUserDB(user, admin) {
     userModel.count({ "username": user.username }, function(err, count) {
         if (err) {
             console.log("Error " + err);
         } else if (count == 0) {
             userModel.create({
+                "admin": admin,
                 "username": user.username,
                 "firstname": user.firstname,
                 "lastname": user.lastname,
@@ -269,7 +273,7 @@ app.post('/signup', function(req, res) {
         inputusername = req.body.username.toLowerCase();
     }
     const user = { "username": inputusername, "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password };
-    addUserDB(user);
+    addUserDB(user, false);
 
     res.send('Account Created');
 });
@@ -279,7 +283,7 @@ app.post('/login', function(req, res) {
     if (req.body.username != undefined) {
         inputusername = req.body.username.toLowerCase();
     }
-    findUserDB({ "username": inputusername, "password": req.body.password }, function(data) {
+    findUserDB({ admin: false, "username": inputusername, "password": req.body.password }, function(data) {
         console.log(data, data.length);
         if (data.length) {
             req.session.authenticated = true
@@ -377,6 +381,59 @@ app.get('/historyitems', authenticateUser, (req, res) => {
         res.json(data);
     })
 });
+
+
+///ADMIN//
+
+
+function getUsersDB(adminUsername, next) {
+    userModel.find({}, function(err, data) {
+        if (err)
+            console.log(err);
+        let users = data.filter((info) => info.username != adminUsername);
+        next(users);
+    });
+}
+
+
+function authenticateAdmin(req, res, next) {
+    if (req.session.adminAuthenticated) {
+        next();
+    } else {
+        res.send("you are not an admin");
+    }
+}
+
+app.post('/adminlogin', function(req, res) {
+    let inputusername = "";
+    if (req.body.username != undefined) {
+        inputusername = req.body.username.toLowerCase();
+    }
+    findUserDB({ "admin": true, "username": inputusername, "password": req.body.password }, function(data) {
+        console.log(data, data.length);
+        if (data.length) {
+            req.session.adminAuthenticated = true
+            req.session.username = req.body.username;
+            res.render('admindashboard.ejs', { username: req.session.username });
+        } else {
+            res.send("invalid admin username or password");
+        }
+    });
+});
+
+app.get('/getusers', authenticateAdmin, (req, res) => {
+
+    getUsersDB(req.body.username, (data) => res.json(data));
+
+});
+
+
+
+
+
+
+
+//ADMIN//
 
 
 
@@ -538,4 +595,9 @@ app.listen(5000, function(err) {
     if (err)
         console.log(err);
     populateDB();
+    try {
+        addUserDB({ username: "admin", firstname: "admin", lastname: "admin", password: "1" }, true);
+    } catch (e) {
+        console.log(".");
+    }
 });
