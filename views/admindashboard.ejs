@@ -14,7 +14,6 @@
 
         function loadUserDetails(users) {
             $("#user-details").html("");
-
             for (let i = 0; i < users.length; ++i) {
                 const userCard =
                     `<form id='${users[i].username}' action='/updateuser' method='POST'>

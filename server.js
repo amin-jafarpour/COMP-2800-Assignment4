@@ -416,33 +416,18 @@ app.post('/updateuser', authenticateAdmin, (req, res) => {
     console.log(req.body);
     if (req.body.delete == 'on') {
         userModel.deleteOne({ "username": req.body.userspot }, () => {
-            res.render('admindashboard.ejs', { username: req.session.username, message: `${req.body.userspot} deleted` });
+            // res.render('admindashboard.ejs', { username: req.session.username, message: `${req.body.userspot} deleted` });
+            res.redirect('/');
         });
     } else {
         userModel.updateOne({ "username": req.body.userspot }, { "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password }, () => {
-            res.render('admindashboard.ejs', { username: req.session.username, message: `changed firstname = ${req.body.firstname}, 
-            lastname = ${req.body.lastname}, password = ${req.body.password }` });
+            // res.render('admindashboard.ejs', { username: req.session.username, message: `changed firstname = ${req.body.firstname}, 
+            // lastname = ${req.body.lastname}, password = ${req.body.password }` });
+            res.redirect('/');
         });
     }
     // userModel.updateOne({ "username": req.params.username }, );
 });
-
-// app.post('/adminlogin', function(req, res) {
-//     let inputusername = "";
-//     if (req.body.username != undefined) {
-//         inputusername = req.body.username.toLowerCase();
-//     }
-//     findUserDB({ "admin": true, "username": inputusername, "password": req.body.password }, function(data) {
-//         console.log(data, data.length);
-//         if (data.length) {
-//             req.session.adminAuthenticated = true;
-//             req.session.username = req.body.username;
-//             res.render('admindashboard.ejs', { username: req.session.username });
-//         } else {
-//             res.send("invalid admin username or password");
-//         }
-//     });
-// });
 
 app.get('/getusers', authenticateAdmin, (req, res) => {
 
