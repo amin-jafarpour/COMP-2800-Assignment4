@@ -21,6 +21,7 @@ const { query } = require('express');
 const { parse } = require('path');
 const { clearScreenDown } = require('readline');
 const { get } = require('http');
+const { createHmac } = require('crypto');
 //***********************************************************************************************************************
 app.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }));
 
@@ -73,7 +74,7 @@ function addUserDB(user, admin) {
                 "shoppingcard": []
             });
         } else {
-            throw "user already exists";
+            throw new Error('"user already exists"');
         }
     });
 }
@@ -246,8 +247,9 @@ function authenticateUser(req, res, next) {
 //********************************************************************************************************************** */
 
 app.get('/', function(req, res) {
-    console.log('hihihi');
-    if (req.session.authenticated) {
+    if (req.session.adminAuthenticated) {
+        res.render('admindashboard.ejs', { username: req.session.username, message: "" });
+    } else if (req.session.authenticated) {
         res.redirect("/home");
     } else {
         res.sendFile('/index.html', { root: __dirname });
@@ -283,12 +285,18 @@ app.post('/login', function(req, res) {
     if (req.body.username != undefined) {
         inputusername = req.body.username.toLowerCase();
     }
-    findUserDB({ admin: false, "username": inputusername, "password": req.body.password }, function(data) {
+    findUserDB({ "username": inputusername, "password": req.body.password }, function(data) {
         console.log(data, data.length);
         if (data.length) {
             req.session.authenticated = true
             req.session.username = req.body.username;
-            res.redirect('/home');
+            if (data[0].admin) {
+                req.session.adminAuthenticated = true;
+                res.render('admindashboard.ejs', { username: req.session.username, message: "" });
+            } else {
+                res.redirect('/home');
+            }
+
         } else {
             res.send("invalid username or password");
         }
@@ -404,22 +412,37 @@ function authenticateAdmin(req, res, next) {
     }
 }
 
-app.post('/adminlogin', function(req, res) {
-    let inputusername = "";
-    if (req.body.username != undefined) {
-        inputusername = req.body.username.toLowerCase();
+app.post('/updateuser', authenticateAdmin, (req, res) => {
+    console.log(req.body);
+    if (req.body.delete == 'on') {
+        userModel.deleteOne({ "username": req.body.userspot }, () => {
+            res.render('admindashboard.ejs', { username: req.session.username, message: `${req.body.userspot} deleted` });
+        });
+    } else {
+        userModel.updateOne({ "username": req.body.userspot }, { "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password }, () => {
+            res.render('admindashboard.ejs', { username: req.session.username, message: `changed firstname = ${req.body.firstname}, 
+            lastname = ${req.body.lastname}, password = ${req.body.password }` });
+        });
     }
-    findUserDB({ "admin": true, "username": inputusername, "password": req.body.password }, function(data) {
-        console.log(data, data.length);
-        if (data.length) {
-            req.session.adminAuthenticated = true
-            req.session.username = req.body.username;
-            res.render('admindashboard.ejs', { username: req.session.username });
-        } else {
-            res.send("invalid admin username or password");
-        }
-    });
+    // userModel.updateOne({ "username": req.params.username }, );
 });
+
+// app.post('/adminlogin', function(req, res) {
+//     let inputusername = "";
+//     if (req.body.username != undefined) {
+//         inputusername = req.body.username.toLowerCase();
+//     }
+//     findUserDB({ "admin": true, "username": inputusername, "password": req.body.password }, function(data) {
+//         console.log(data, data.length);
+//         if (data.length) {
+//             req.session.adminAuthenticated = true;
+//             req.session.username = req.body.username;
+//             res.render('admindashboard.ejs', { username: req.session.username });
+//         } else {
+//             res.send("invalid admin username or password");
+//         }
+//     });
+// });
 
 app.get('/getusers', authenticateAdmin, (req, res) => {
 
@@ -595,9 +618,4 @@ app.listen(5000, function(err) {
     if (err)
         console.log(err);
     populateDB();
-    try {
-        addUserDB({ username: "admin", firstname: "admin", lastname: "admin", password: "1" }, true);
-    } catch (e) {
-        console.log(".");
-    }
 });

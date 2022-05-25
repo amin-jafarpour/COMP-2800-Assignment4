@@ -6,14 +6,56 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        $("get-users-btn").click(function() {
-            $.ajax({
-                url: "/getusers",
-                success: function(result) {
-                    $("#user-details").html(result);
-                }
+        function sendServer() {
+
+        }
+
+        function loadUserDetails(users) {
+            $("#user-details").html("");
+
+            for (let i = 0; i < users.length; ++i) {
+                const userCard =
+                    `<form id='${users[i].username}' action='/updateuser' method='POST'>
+                     <input style='visibility: hidden;' name='${'userspot'}' value='${users[i].username}'/>
+                     <label>First Name</label>
+                     <input type="text" name='firstname' value='${users[i].firstname}'/>
+
+                     <label>Last Name</label>
+                     <input type="text" name='lastname' value='${users[i].lastname}'/>
+
+                     <label>Password</label>
+                     <input type="text" name='password' value='${users[i].password}'/>
+
+                     <label>Delete</label>
+                     <input type='checkbox' name='delete'/>
+                
+                     <input type='submit' value='submit'/>
+                </form>`;
+
+                $("#user-details").append(userCard);
+
+            }
+
+        }
+
+
+        $(document).ready(function() {
+
+            $("#get-users-btn").click(function f() {
+                $.ajax({
+                    type: "GET",
+                    url: `/getusers`,
+                    success: function(data) {
+                        loadUserDetails(data);
+                    }
+                })
             });
+
+            ///
+
+
         });
     </script>
 </head>
@@ -23,6 +65,9 @@
     <h1>Welcome
         <%=username%>
     </h1>
+    <h2>
+        <%=message%>
+    </h2>
 
     <div id="functionalities">
         <button id="get-users-btn"></button>
