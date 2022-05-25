@@ -292,6 +292,7 @@ app.post('/login', function(req, res) {
             req.session.username = req.body.username;
             if (data[0].admin) {
                 req.session.adminAuthenticated = true;
+                req.session.username = req.body.username;
                 res.render('admindashboard.ejs', { username: req.session.username, message: "" });
             } else {
                 res.redirect('/home');
@@ -431,8 +432,7 @@ app.post('/updateuser', authenticateAdmin, (req, res) => {
 
 app.get('/getusers', authenticateAdmin, (req, res) => {
 
-    getUsersDB(req.body.username, (data) => res.json(data));
-
+    getUsersDB(req.session.username, (data) => res.json(data));
 });
 
 
