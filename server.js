@@ -518,7 +518,7 @@ app.get('/gamecontent', authenticateUser, (req, res) => {
 
 app.post('/endgame', authenticateUser, (req, res) => {
     console.log(req.body.gamecount);
-    res.send("nonno");
+    res.send(req.body.gamecount);
 });
 
 
