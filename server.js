@@ -516,6 +516,11 @@ app.get('/gamecontent', authenticateUser, (req, res) => {
     res.json({ "html": req.session.gameString, "count": req.session.gameCount, "timelimit": req.session.gametime });
 });
 
+app.post('/endgame', authenticateUser, (req, res) => {
+    console.log(req.body.gamecount);
+    res.send("nonno");
+});
+
 
 
 

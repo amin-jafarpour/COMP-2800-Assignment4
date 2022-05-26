@@ -129,7 +129,16 @@
 
             } else if (timeintervalref != undefined) {
                 clearInterval(timeintervalref);
-                //call terminatorm
+                $.ajax({
+                    type: "POST",
+                    url: `/endgame`,
+                    data: {
+                        "gamecount": gamecount
+                    },
+                    success: function(data) {
+                        window.alert(data);
+                    }
+                })
             }
 
         }
