@@ -81,13 +81,18 @@
                         $(`#${firstCard.id}`).attr("src") ==
                         $(`#${secondCard.id}`).attr("src")
                     ) {
-                        $(`#${firstCard.id}`).parent().off("click")
-                        $(`#${secondCard.id}`).parent().off("click")
-                        console.log($(`#${firstCard.id}`).parent(), "KKKK");
-                        console.log($(`#${firstCard.id}`).parent(), "KKKK");
+
+                        $(`#${firstCard.id}`).parent().off("click");
+                        $(`#${secondCard.id}`).parent().off("click");
+
+                        // console.log($(`#${firstCard.id}`).parent(), "111");
+                        // console.log($(`#${secondCard.id}`).parent(), "222");
+                        console.log(`#${firstCard.id}`, "111");
+                        console.log(`#${secondCard.id}`, "222");
 
 
-
+                        // $(`#${firstCard.id}`).parent().off("click");
+                        // $(`#${secondCard.id}`).parent().off("click");
                     } else {
                         // unflipping
                         setTimeout(() => {

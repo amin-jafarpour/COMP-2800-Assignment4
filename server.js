@@ -473,12 +473,16 @@ app.post('/cardsetting', authenticateUser, (req, res) => {
         let poks = [];
         for (let i = 0; i < poknum / 2; ++i) {
             let random = Math.floor(Math.random() * (20 - 1) + 1);
-            let div = ` <div class="card" id="card${random}">
-                 <img id="img${random}" class="front_face" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${random}.png" alt="">
+            let div1 = ` <div class="card" id="card${i}">
+                 <img id="img${i}" class="front_face" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${random}.png" alt="">
                 <img class="back_face" src="./back.jpg" alt="">
                 </div>`;
-            arr.push({ "text": div, "num": Math.floor(Math.random() * (1000 - 1) + 1) });
-            arr.push({ "text": div, "num": Math.floor(Math.random() * (1000 - 1) + 1) });
+            let div2 = ` <div class="card" id="cardt${i}">
+                <img id="imgt${i}" class="front_face" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${random}.png" alt="">
+               <img class="back_face" src="./back.jpg" alt="">
+               </div>`;
+            arr.push({ "text": div1, "num": Math.floor(Math.random() * (1000 - 1) + 1) });
+            arr.push({ "text": div2, "num": Math.floor(Math.random() * (1000 - 1) + 1) });
             //poks.push(data[random]);
         }
         //console.log(poks);
