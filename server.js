@@ -460,6 +460,39 @@ app.post('/adduser', authenticateAdmin, (req, res) => {
     addUserDB({ "username": req.body.username, "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password }, admin, (message) => res.send(message));
 });
 
+app.get('/cardsetting', (req, res) => {
+    //let poknum = parseInt(req.body.dem);
+    poknum = 12;
+
+    let arr = [];
+
+    poksModel.find({}, (err, data) => {
+        let poks = [];
+        for (let i = 0; i < poknum / 2; ++i) {
+            let random = Math.floor(Math.random() * (20 - 1) + 1);
+            let div = ` <div class="card" id="card${random}">
+                 <img class="front_face" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${random}.png" alt="">
+                <img class="back_face" src="./back.jpg" alt="">
+                </div>`;
+            arr.push({ "text": div, "num": Math.floor(Math.random() * (1000 - 1) + 1) });
+            arr.push({ "text": div, "num": Math.floor(Math.random() * (1000 - 1) + 1) });
+            //poks.push(data[random]);
+        }
+        //console.log(poks);
+
+        arr.sort(function(a, b) { return a.num - b.num });
+
+        let content = '';
+        for (let i = 0; i < arr.length; ++i) {
+            content += arr[i].text;
+        }
+
+        res.send(content);
+
+        //res
+    });
+});
+
 
 
 

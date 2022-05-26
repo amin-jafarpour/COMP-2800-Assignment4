@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <script>
+        function increment() {
+            let value = parseInt(document.getElementById('dem').value);
+            value += 2;
+            console.log(value);
+            if (value <= 12) {
+                let content = `${value}*${value}`;
+                document.getElementById('dem').value = value;
+                document.getElementById('display').value = content;
+
+            }
+        }
+
+        function decrement() {
+            let value = parseInt(document.getElementById('dem').value);
+            value -= 2;
+            if (value >= 2) {
+                document.getElementById('dem').value = value;
+                document.getElementById('display').value = `${value}*${value}`;
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <form action="/cardsetting" method="POST">
+        <label for="html">Difficulty Level:</label><br/>
+
+        <label for="html">easy</label>
+        <input type="radio" id="html" name="difficulty" value="easy">
+        <label for="html">medium</label>
+        <input type="radio" id="html" name="difficulty" value="medium">
+        <label for="html">hard</label>
+        <input type="radio" id="html" name="difficulty" value="hard"><br>
+
+        <label>dimensions:</label><label id="display">2*2</label>
+        <input type="text" id="dem" name="dem" value="2">
+
+
+        <button onclick="increment()">+</button>
+        <button onclick="decrement()">-</button>
+
+
+
+
+    </form>
+
+
+
+
+
+
+</body>
+
+</html>
