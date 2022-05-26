@@ -60,7 +60,7 @@ const userModel = mongoose.model("user", UserSchema);
 
 
 
-function addUserDB(user, admin) {
+function addUserDB(user, admin, next) {
     userModel.count({ "username": user.username }, function(err, count) {
         if (err) {
             console.log("Error " + err);
@@ -72,9 +72,9 @@ function addUserDB(user, admin) {
                 "lastname": user.lastname,
                 "password": user.password,
                 "shoppingcard": []
-            });
+            }, () => next('user created'));
         } else {
-            throw new Error('"user already exists"');
+            next('account already exists');
         }
     });
 }
@@ -275,9 +275,7 @@ app.post('/signup', function(req, res) {
         inputusername = req.body.username.toLowerCase();
     }
     const user = { "username": inputusername, "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password };
-    addUserDB(user, false);
-
-    res.send('Account Created');
+    addUserDB(user, false, (message) => res.send(message));
 });
 
 app.post('/login', function(req, res) {
@@ -415,7 +413,6 @@ function authenticateAdmin(req, res, next) {
 }
 
 app.post('/updateuser', authenticateAdmin, (req, res) => {
-    console.log(req.body);
     if (req.body.delete == 'on') {
         userModel.deleteOne({ "username": req.body.userspot }, () => {
             // res.render('admindashboard.ejs', { username: req.session.username, message: `${req.body.userspot} deleted` });
@@ -432,7 +429,6 @@ app.post('/updateuser', authenticateAdmin, (req, res) => {
 });
 
 app.get('/getusers', authenticateAdmin, (req, res) => {
-
     getUsersDB(req.session.username, (data) => res.json(data));
 });
 
@@ -444,17 +440,24 @@ app.get('/getusers', authenticateAdmin, (req, res) => {
 //     });
 // });
 
-app.get('/editaccount', authenticateUser, (req, res) => {
+
+app.get('/editaccount', authenticateAdmin, (req, res) => {
     userModel.find({ "username": req.session.username }, (err, data) => {
         const details = data[0];
         res.render('editaccount.ejs', { username: details.username, firstname: details.firstname, lastname: details.lastname, password: details.password });
     });
 });
 
-app.post('/changeaccount', authenticateUser, (req, res) => {
+app.post('/changeaccount', authenticateAdmin, (req, res) => {
     userModel.updateOne({ "username": req.session.username }, { "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password }, (err, data) => {
         res.redirect('/editaccount');
     });
+});
+
+app.post('/adduser', authenticateAdmin, (req, res) => {
+    console.log(req.body.admin);
+    const admin = (req.body.admin == 'on') ? true : false;
+    addUserDB({ "username": req.body.username, "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password }, admin, (message) => res.send(message));
 });
 
 

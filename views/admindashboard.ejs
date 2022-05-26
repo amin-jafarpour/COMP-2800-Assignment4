@@ -87,6 +87,25 @@
                 })
             });
 
+            $("#add-users-btn").click(() => {
+                $("#create-user-info").html("");
+                const fields = `<form action="/adduser" method="POST">
+                                <label>username:</label>
+                                <input type="text" name="username">
+                                <label>First Name:</label>
+                                <input type="text" name="firstname">
+                                <label>Last Name:</label>
+                                <input type="text" name="lastname">
+                                <label>Password</label>
+                                <input type="password" name="password">
+                                <label>Admin:</label>
+                                <input type="checkbox" name="admin">
+                                <input type='submit' value='Submit'/>
+                            </form>`;
+
+                $("#create-user-info").append(fields);
+            });
+
             //...
 
 
@@ -101,6 +120,9 @@
         <ul>
             <a id="get-users-btn">Edit Users</a>
         </ul>
+        <ul>
+            <a id="add-users-btn">Add Users</a>
+        </ul>
     </nav>
 
     <h1>Welcome
@@ -110,11 +132,13 @@
         <%=message%>
     </h2>
 
+    <div id="create-user-info">
+
+    </div>
+
     <div id="functionalities">
         <!-- <button id="get-users-btn"></button> -->
     </div>
-
-
 
     <div id="user-details"></div>
 
