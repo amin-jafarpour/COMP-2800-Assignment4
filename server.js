@@ -292,6 +292,7 @@ app.post('/login', function(req, res) {
             req.session.username = req.body.username;
             if (data[0].admin) {
                 req.session.adminAuthenticated = true;
+                req.session.authenticated = true;
                 req.session.username = req.body.username;
                 res.render('admindashboard.ejs', { username: req.session.username, message: "" });
             } else {
@@ -433,6 +434,27 @@ app.post('/updateuser', authenticateAdmin, (req, res) => {
 app.get('/getusers', authenticateAdmin, (req, res) => {
 
     getUsersDB(req.session.username, (data) => res.json(data));
+});
+
+// app.get('/editaccount', authenticateUser(req, res), => {
+//     userModel.find({ "username": req.body.userspot }, (data) => {
+//         console.log("data", data);
+
+//         res.send("yes");
+//     });
+// });
+
+app.get('/editaccount', authenticateUser, (req, res) => {
+    userModel.find({ "username": req.session.username }, (err, data) => {
+        const details = data[0];
+        res.render('editaccount.ejs', { username: details.username, firstname: details.firstname, lastname: details.lastname, password: details.password });
+    });
+});
+
+app.post('/changeaccount', authenticateUser, (req, res) => {
+    userModel.updateOne({ "username": req.session.username }, { "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password }, (err, data) => {
+        res.redirect('/editaccount');
+    });
 });
 
 
