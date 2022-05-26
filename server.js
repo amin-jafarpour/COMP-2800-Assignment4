@@ -517,8 +517,11 @@ app.get('/gamecontent', authenticateUser, (req, res) => {
 });
 
 app.post('/endgame', authenticateUser, (req, res) => {
-    console.log(req.body.gamecount);
-    res.send(req.body.gamecount);
+    if (req.body.gamecount <= 0) {
+        res.send("you won");
+    } else {
+        res.send("you lost");
+    }
 });
 
 

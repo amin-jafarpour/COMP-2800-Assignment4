@@ -123,7 +123,7 @@
 
         function countdown() {
             console.log(this, "123344556");
-            if (timeintervalref != undefined && time >= 1) {
+            if (timeintervalref != undefined && time >= 1 && gamecount >= 1) {
                 time -= 1;
                 $("#timer").text(time);
 
@@ -157,11 +157,6 @@
                     }
                 })
             });
-
-            // setTimeout(() => {
-            //     timeintervalref.stop
-            // }, time);
-
         }
 
         $(document).ready(setup)
