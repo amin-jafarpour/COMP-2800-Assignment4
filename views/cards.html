@@ -61,6 +61,7 @@
         secondCard = undefined
 
         firstCardHasBeenFlipped = false
+        let globalCounter = 0;
 
         function play() {
             $(".card").on("click", function() {
@@ -70,7 +71,7 @@
                 if (!firstCardHasBeenFlipped) {
                     // the first card
                     firstCard = $(this).find(".front_face")[0]
-                        // console.log(firstCard);
+                        //console.log(firstCard.id, "jjj");
                     firstCardHasBeenFlipped = true
                 } else {
                     // this is the 2nd card
@@ -82,6 +83,11 @@
                     ) {
                         $(`#${firstCard.id}`).parent().off("click")
                         $(`#${secondCard.id}`).parent().off("click")
+                        console.log($(`#${firstCard.id}`).parent(), "KKKK");
+                        console.log($(`#${firstCard.id}`).parent(), "KKKK");
+
+
+
                     } else {
                         // unflipping
                         setTimeout(() => {
@@ -94,10 +100,6 @@
         }
 
         function setup() {
-
-
-            //////////////////
-
             $("#start-btn").click(function() {
                 $.ajax({
                     type: "GET",

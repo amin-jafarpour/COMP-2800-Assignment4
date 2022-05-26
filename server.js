@@ -474,7 +474,7 @@ app.post('/cardsetting', authenticateUser, (req, res) => {
         for (let i = 0; i < poknum / 2; ++i) {
             let random = Math.floor(Math.random() * (20 - 1) + 1);
             let div = ` <div class="card" id="card${random}">
-                 <img class="front_face" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${random}.png" alt="">
+                 <img id="img${random}" class="front_face" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${random}.png" alt="">
                 <img class="back_face" src="./back.jpg" alt="">
                 </div>`;
             arr.push({ "text": div, "num": Math.floor(Math.random() * (1000 - 1) + 1) });
