@@ -460,10 +460,13 @@ app.post('/adduser', authenticateAdmin, (req, res) => {
     addUserDB({ "username": req.body.username, "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password }, admin, (message) => res.send(message));
 });
 
-app.get('/cardsetting', (req, res) => {
-    //let poknum = parseInt(req.body.dem);
-    poknum = 12;
+app.get('/playgame', authenticateUser, (req, res) => {
+    res.sendFile("/views/settings.html", { root: __dirname });
+});
 
+app.post('/cardsetting', authenticateUser, (req, res) => {
+    let poknum = parseInt(req.body.dem);
+    //let poknum = 2;
     let arr = [];
 
     poksModel.find({}, (err, data) => {
@@ -486,11 +489,15 @@ app.get('/cardsetting', (req, res) => {
         for (let i = 0; i < arr.length; ++i) {
             content += arr[i].text;
         }
-
-        res.send(content);
-
+        //res.render("cards.ejs", { cards: content });
+        req.session.gameString = content;
+        res.sendFile('/views/cards.html', { root: __dirname });
         //res
     });
+});
+
+app.get('/gamecontent', authenticateUser, (req, res) => {
+    res.send(req.session.gameString);
 });
 
 
