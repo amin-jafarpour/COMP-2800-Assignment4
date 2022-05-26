@@ -63,42 +63,56 @@
         firstCardHasBeenFlipped = false
         let globalCounter = 0;
 
+        let changecard = true;
+
         function play() {
             $(".card").on("click", function() {
-                $(this).toggleClass("flip")
+                if (changecard) {
 
 
-                if (!firstCardHasBeenFlipped) {
-                    // the first card
-                    firstCard = $(this).find(".front_face")[0]
-                        //console.log(firstCard.id, "jjj");
-                    firstCardHasBeenFlipped = true
-                } else {
-                    // this is the 2nd card
-                    secondCard = $(this).find(".front_face")[0]
-                    firstCardHasBeenFlipped = false
-                    if (
-                        $(`#${firstCard.id}`).attr("src") ==
-                        $(`#${secondCard.id}`).attr("src")
-                    ) {
-
-                        $(`#${firstCard.id}`).parent().off("click");
-                        $(`#${secondCard.id}`).parent().off("click");
-
-                        // console.log($(`#${firstCard.id}`).parent(), "111");
-                        // console.log($(`#${secondCard.id}`).parent(), "222");
-                        console.log(`#${firstCard.id}`, "111");
-                        console.log(`#${secondCard.id}`, "222");
+                    $(this).toggleClass("flip")
 
 
-                        // $(`#${firstCard.id}`).parent().off("click");
-                        // $(`#${secondCard.id}`).parent().off("click");
+                    if (!firstCardHasBeenFlipped) {
+                        // the first card
+                        firstCard = $(this).find(".front_face")[0]
+                            //console.log(firstCard.id, "jjj");
+                        firstCardHasBeenFlipped = true
                     } else {
-                        // unflipping
-                        setTimeout(() => {
-                            $(`#${firstCard.id}`).parent().removeClass("flip")
-                            $(`#${secondCard.id}`).parent().removeClass("flip")
-                        }, 1000)
+                        // this is the 2nd card
+                        secondCard = $(this).find(".front_face")[0]
+                        firstCardHasBeenFlipped = false
+
+                        changecard = false;
+
+
+                        if (
+                            $(`#${firstCard.id}`).attr("src") ==
+                            $(`#${secondCard.id}`).attr("src")
+                        ) {
+
+                            $(`#${firstCard.id}`).parent().off("click");
+                            $(`#${secondCard.id}`).parent().off("click");
+
+                            // console.log($(`#${firstCard.id}`).parent(), "111");
+                            // console.log($(`#${secondCard.id}`).parent(), "222");
+                            console.log(`#${firstCard.id}`, "111");
+                            console.log(`#${secondCard.id}`, "222");
+
+
+                            changecard = true;
+
+
+                            // $(`#${firstCard.id}`).parent().off("click");
+                            // $(`#${secondCard.id}`).parent().off("click");
+                        } else {
+                            // unflipping
+                            setTimeout(() => {
+                                $(`#${firstCard.id}`).parent().removeClass("flip")
+                                $(`#${secondCard.id}`).parent().removeClass("flip")
+                                changecard = true;
+                            }, 1000)
+                        }
                     }
                 }
             })
