@@ -66,6 +66,7 @@
         let changecard = true;
         let gamecount = 0;
         let time = 0;
+        let timeintervalref = undefined;
 
         function play() {
             $(".card").on("click", function() {
@@ -120,6 +121,19 @@
             })
         }
 
+        function countdown() {
+            console.log(this, "123344556");
+            if (timeintervalref != undefined && time >= 1) {
+                time -= 1;
+                $("#timer").text(time);
+
+            } else if (timeintervalref != undefined) {
+                clearInterval(timeintervalref);
+                //call terminatorm
+            }
+
+        }
+
         function setup() {
             $("#start-btn").click(function() {
                 $.ajax({
@@ -130,13 +144,15 @@
                         gamecount = data.count;
                         time = data.timelimit;
                         play();
+                        timeintervalref = setInterval(countdown, 1000);
                     }
                 })
             });
 
-            setTimeout(() => {
-                //logic here
-            }, time);
+            // setTimeout(() => {
+            //     timeintervalref.stop
+            // }, time);
+
         }
 
         $(document).ready(setup)
@@ -144,6 +160,8 @@
 </head>
 
 <body>
+
+    <p id="timer"></p>
 
 
     <div id="game_grid">

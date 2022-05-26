@@ -471,11 +471,11 @@ app.post('/cardsetting', authenticateUser, (req, res) => {
     let time = 0;
 
     if (req.body.difficulty == 'easy') {
-        time = 1000 * 25;
+        time = 25;
     } else if (req.body.difficulty == 'medium') {
-        time = 1000 * 15;
+        time = 15;
     } else if (req.body.difficulty == 'hard') {
-        time = 1000 * 10;
+        time = 10;
     }
     console.log(req.body.difficulty);
 
@@ -506,13 +506,14 @@ app.post('/cardsetting', authenticateUser, (req, res) => {
         //res.render("cards.ejs", { cards: content });
         req.session.gameString = content;
         req.session.gameCount = poknum / 2;
+        req.session.gametime = time;
         res.sendFile('/views/cards.html', { root: __dirname });
         //res
     });
 });
 
 app.get('/gamecontent', authenticateUser, (req, res) => {
-    res.json({ "html": req.session.gameString, "count": req.session.gameCount, "timelimit": time });
+    res.json({ "html": req.session.gameString, "count": req.session.gameCount, "timelimit": req.session.gametime });
 });
 
 
