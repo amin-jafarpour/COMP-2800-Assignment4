@@ -6,6 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
+    <style>
+        p {
+            display: inline;
+        }
+        
+        #decrement-btn {
+            margin-left: 5px;
+        }
+        
+        #info-form {
+            display: block;
+            margin-left: 40%;
+            margin-top: 5%;
+        }
+        
+        body {
+            background-color: rgb(22, 159, 222);
+        }
+    </style>
     <script>
         function increment() {
             let value = parseInt(document.getElementById('dem').value);
@@ -14,7 +33,7 @@
             if (value <= 12) {
                 let content = `${value}*${value}`;
                 document.getElementById('dem').value = value;
-                document.getElementById('display').value = content;
+                document.getElementById('display').innerHTML = `${value}*${value}`;;
 
             }
         }
@@ -24,7 +43,7 @@
             value -= 2;
             if (value >= 2) {
                 document.getElementById('dem').value = value;
-                document.getElementById('display').value = `${value}*${value}`;
+                document.getElementById('display').innerHTML = `${value}*${value}`;
             }
         }
     </script>
@@ -32,7 +51,7 @@
 
 <body>
 
-    <form action="/cardsetting" method="POST">
+    <form action="/cardsetting" method="POST" id="info-form">
         <label for="html">Difficulty Level:</label><br/>
 
         <label for="html">easy</label>
@@ -42,14 +61,17 @@
         <label for="html">hard</label>
         <input type="radio" id="html" name="difficulty" value="hard"><br>
 
-        <label>dimensions:</label><label id="display">2*2</label>
-        <input type="text" id="dem" name="dem" value="2">
+        <label>dimensions:</label>
+        <p id="display">2*2</p>
 
 
-        <span onclick="increment()">+</span>
-        <span onclick="decrement()">-</span>
+
+        <input type="button" onclick="increment()" value="+"></p>
+        <input type="button" onclick="decrement()" id="decrement-btn" value="-"></p>
+        <br/>
 
         <input type="submit" value="submit">
+        <input type="text" id="dem" name="dem" value="2" style="visibility: hidden;">
 
     </form>
 
