@@ -44,6 +44,22 @@
 </head>
 
 <body>
+    <nav id="navbar">
+        <ul>
+            <a href="/logout">
+                Log out
+            </a>
+            <a href="checkout">checkout</a>
+            <a href="/search">
+                Search 
+            </a>
+
+            <a href="/purchasehistory">Purchase History</a>
+            <a href="/playgame">Play game</a>
+            <a href="/gamelogfile">view game log</a>
+            <a href="/editaccount">edit account</a>
+        </ul>
+    </nav>
     <h1>
         <%=username%>'s account info:</h1>
     <form action='/changeaccount' method='POST'>

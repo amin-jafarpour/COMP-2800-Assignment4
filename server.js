@@ -442,14 +442,14 @@ app.get('/getusers', authenticateAdmin, (req, res) => {
 // });
 
 
-app.get('/editaccount', authenticateAdmin, (req, res) => {
+app.get('/editaccount', authenticateUser, (req, res) => {
     userModel.find({ "username": req.session.username }, (err, data) => {
         const details = data[0];
         res.render('editaccount.ejs', { username: details.username, firstname: details.firstname, lastname: details.lastname, password: details.password });
     });
 });
 
-app.post('/changeaccount', authenticateAdmin, (req, res) => {
+app.post('/changeaccount', authenticateUser, (req, res) => {
     userModel.updateOne({ "username": req.session.username }, { "firstname": req.body.firstname, "lastname": req.body.lastname, "password": req.body.password }, (err, data) => {
         res.redirect('/editaccount');
     });
