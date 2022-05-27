@@ -50,7 +50,8 @@ const UserSchema = new mongoose.Schema({
     "lastname": String,
     "password": String,
     "shoppingcard": Array,
-    "timeline": Array
+    "timeline": Array,
+    "gamelog": Array
 });
 
 const poklogsModel = mongoose.model("poklogs", logSchema);
@@ -526,6 +527,8 @@ app.post('/endgame', authenticateUser, (req, res) => {
 
 app.get('/win', authenticateUser, (req, res) => res.sendFile('/views/win.html', { root: __dirname }));
 app.get('/lost', authenticateUser, (req, res) => res.sendFile('/views/lost.html', { root: __dirname }));
+
+app.get('/gamelog', authenticateAdmin, (req, res) => {});
 
 
 
