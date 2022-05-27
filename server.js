@@ -542,6 +542,10 @@ app.get('/getgamelog', authenticateUser, (req, res) => {
     });
 });
 
+app.get("/gamelogfile", authenticateUser, (req, res) => {
+    res.sendFile('/views/gamelog.html', { root: __dirname });
+});
+
 
 
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game log</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        #container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #container>div {
+            border: 2px solid black;
+            padding: 5px;
+        }
+        
+        #history-item {
+            display: flex;
+            flex-direction: row;
+        }
+    </style>
+    <script>
+        function setup() {
+            $.ajax({
+                type: "GET",
+                url: `/getgamelog`,
+                success: function(data) {
+                    $("#container").html("");
+
+                    for (let i = 0; i < data.length; ++i) {
+                        let record = `<div class="history-item">
+                                        <h4>Card Number: ${data[i].cardnum}</h4>
+                                        <h4>difficulty Level: ${data[i].difficulty}</h4>
+                                        <h4>Game Status: ${data[i].status}</h4>
+                                        </div>`;
+                        $("#container").append(record);
+
+                    }
+                    console.log(data);
+                }
+            })
+        }
+
+        $(document).ready(setup)
+    </script>
+</head>
+
+<body>
+
+    <div id="container"></div>
+
+</body>
+
+</html>
