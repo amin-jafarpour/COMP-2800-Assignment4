@@ -518,11 +518,14 @@ app.get('/gamecontent', authenticateUser, (req, res) => {
 
 app.post('/endgame', authenticateUser, (req, res) => {
     if (req.body.gamecount <= 0) {
-        res.send("you won");
+        res.send("/win");
     } else {
-        res.send("you lost");
+        res.send("lost");
     }
 });
+
+app.get('/win', authenticateUser, (req, res) => res.sendFile('/views/win.html', { root: __dirname }));
+app.get('/lost', authenticateUser, (req, res) => res.sendFile('/views/lost.html', { root: __dirname }));
 
 
 
