@@ -508,6 +508,7 @@ app.post('/cardsetting', authenticateUser, (req, res) => {
         req.session.gameString = content;
         req.session.gameCount = poknum / 2;
         req.session.gametime = time;
+        req.session.gamedifficulty = req.body.difficulty;
         res.sendFile('/views/cards.html', { root: __dirname });
         //res
     });
@@ -518,17 +519,24 @@ app.get('/gamecontent', authenticateUser, (req, res) => {
 });
 
 app.post('/endgame', authenticateUser, (req, res) => {
-    if (req.body.gamecount <= 0) {
-        res.send("/win");
-    } else {
-        res.send("lost");
-    }
+    let gamestatus = (req.body.gamecount <= 0) ? "won" : "lost";
+    let gameentry = { "cardnum": req.session.gameCount * 2, "difficulty": req.session.gamedifficulty, "status": gamestatus };
+    userModel.updateOne({ "username": req.session.username }, { $push: { "gamelog": gameentry } }, () => {
+        if (req.body.gamecount <= 0) {
+            res.send("/win");
+        } else {
+            res.send("/lost");
+        }
+    });
 });
 
 app.get('/win', authenticateUser, (req, res) => res.sendFile('/views/win.html', { root: __dirname }));
 app.get('/lost', authenticateUser, (req, res) => res.sendFile('/views/lost.html', { root: __dirname }));
 
-app.get('/gamelog', authenticateAdmin, (req, res) => {});
+
+
+
+
 
 
 
