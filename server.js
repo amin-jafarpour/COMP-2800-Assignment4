@@ -716,9 +716,29 @@ function populateDB() {
     }
 }
 
+function makePrimaryAdmin() {
+    userModel.count({ "username": "admin" }, function(err, count) {
+        if (err) {
+            console.log("Error " + err);
+        } else if (count == 0) {
+            userModel.create({
+                "admin": true,
+                "username": "admin",
+                "firstname": "adminfirstname",
+                "lastname": "adminlastname",
+                "password": "123",
+                "shoppingcard": []
+            }, () => console.log("primary admin created"));
+        } else {
+            console.log("primary admin already exists");
+        }
+    });
+}
+
 
 app.listen(5000, function(err) {
     if (err)
         console.log(err);
     populateDB();
+    makePrimaryAdmin();
 });
