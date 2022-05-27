@@ -12,11 +12,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         body {
-            margin: 0px
+            margin: 0px;
+            background-color: rgb(0, 217, 255);
         }
         
         #game_grid {
-            border: 2px tomato solid;
+            /* border: 2px tomato solid; */
             width: 600px;
             height: 400px;
             margin: auto;
@@ -52,6 +53,14 @@
         
         .flip {
             transform: rotateY(180deg);
+        }
+        /*  */
+        
+        #timer {
+            display: inline;
+            margin-left: 10px;
+            background-color: red;
+            border: 2px solid black;
         }
     </style>
 
@@ -165,6 +174,7 @@
 
 <body>
 
+    <button id="start-btn">Start Playing</button>
     <p id="timer"></p>
 
 
@@ -172,7 +182,7 @@
 
     </div>
 
-    <button id="start-btn">start</button>
+
 </body>
 
 </html>
