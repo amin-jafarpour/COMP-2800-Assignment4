@@ -522,6 +522,10 @@ app.post('/endgame', authenticateUser, (req, res) => {
     let gamestatus = (req.body.gamecount <= 0) ? "won" : "lost";
     let gameentry = { "cardnum": req.session.gameCount * 2, "difficulty": req.session.gamedifficulty, "status": gamestatus };
     userModel.updateOne({ "username": req.session.username }, { $push: { "gamelog": gameentry } }, () => {
+        req.session.gameString = undefined;
+        req.session.gameCount = undefined;
+        req.session.gametime = undefined;
+        req.session.gamedifficulty = undefined;
         if (req.body.gamecount <= 0) {
             res.send("/win");
         } else {
@@ -529,9 +533,16 @@ app.post('/endgame', authenticateUser, (req, res) => {
         }
     });
 });
-
 app.get('/win', authenticateUser, (req, res) => res.sendFile('/views/win.html', { root: __dirname }));
 app.get('/lost', authenticateUser, (req, res) => res.sendFile('/views/lost.html', { root: __dirname }));
+
+app.get('/getgamelog', authenticateUser, (req, res) => {
+    userModel.find({ "username": req.session.username }, function(err, data) {
+        res.json(data[0].gamelog);
+    });
+});
+
+
 
 
 
