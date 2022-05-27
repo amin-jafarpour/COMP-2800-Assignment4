@@ -57,6 +57,8 @@
                 const userCard =
                     `<form id='${users[i].username}' action='/updateuser' method='POST'>
                      <input style='visibility: hidden;' name='${'userspot'}' value='${users[i].username}'/>
+                     <label>User name:</label>
+                     <input type="text" value="${users[i].username}" disabled>
                      <label>First Name</label>
                      <input type="text" name='firstname' value='${users[i].firstname}'/>
 
